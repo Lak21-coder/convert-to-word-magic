@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Ryklo Technologies  IBM Maximo EAM Consulting">
+  <rect width="1200" height="630" fill="#161616"/>
+  <rect x="0" y="0" width="1200" height="630" fill="url(#grad)" opacity="0.9"/>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f62fe" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#161616" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="80" y="80" width="72" height="72" rx="8" fill="#0f62fe"/>
+  <text x="116" y="132" font-family="IBM Plex Sans, Arial, sans-serif" font-size="42" font-weight="700" fill="#ffffff" text-anchor="middle">R</text>
+  <text x="180" y="118" font-family="IBM Plex Sans, Arial, sans-serif" font-size="44" font-weight="300" fill="#ffffff">Ryklo</text>
+  <text x="180" y="162" font-family="IBM Plex Sans, Arial, sans-serif" font-size="44" font-weight="600" fill="#ffffff">Technologies</text>
+  <text x="80" y="260" font-family="IBM Plex Sans, Arial, sans-serif" font-size="36" font-weight="300" fill="#f4f4f4">IBM Maximo EAM Consulting</text>
+  <text x="80" y="320" font-family="IBM Plex Sans, Arial, sans-serif" font-size="22" font-weight="400" fill="#c6c6c6">Enterprise Asset Management · TRIRIGA · Predictive Maintenance</text>
+  <text x="80" y="540" font-family="IBM Plex Sans, Arial, sans-serif" font-size="20" font-weight="500" fill="#4589ff">ryklotechnologies.com</text>
+</svg>
