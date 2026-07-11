@@ -1,0 +1,19 @@
+{
+  "name": "ryklo-backend",
+  "version": "1.0.0",
+  "description": "API for Ryklo Technologies registration and contact forms (Google Sheets)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "googleapis": "^144.0.0"
+  }
+}

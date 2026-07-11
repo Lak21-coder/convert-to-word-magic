@@ -1,0 +1,51 @@
+Auto - 
+Under backend, I want a simple node based backend that supports registration form and contact us form. stores data in google sheets.  will create and setup google sheets if you can give me steps. 
+Once done, we will need to work on deploying it in doctl droplet about which I will provide you details after first step completion. 
+
+------------------------------------------
+google sheets integration 
+
+Google Sheets setup (do this once)
+Create a Cloud project at console.cloud.google.com (e.g. ryklo-forms).
+
+Enable Google Sheets API → APIs & Services → Library → search “Google Sheets API” → Enable.
+
+Create a service account → Credentials → Create credentials → Service account → open it → Keys → Add key → JSON. Download the file (keep it private).
+
+Create a Google Sheet (e.g. “Ryklo Form Submissions”). From the URL copy the ID: https://docs.google.com/spreadsheets/d/THIS_PART/edit
+
+Share the sheet with the service account email (...@....iam.gserviceaccount.com) as Editor.
+
+Fill backend/.env:
+
+
+use json to get relevent info. 
+for any errors ask gpt 
+
+------------------------------------------------------------
+
+Done backend completed. 
+Now I want you to creat a bangalore $4 droplet, deploy FE and BE there. setup ngix for the same. have SSL certificate configured as well. 
+Once completed I will give you furher details about settting CICD pipeline.  
+
+------------------------------------------------------------
+
+add a reserved IP and assign it to this droplet. then we will go to godaddy. 
+
+------------------------------------------------------------
+DEPLOY STATUS (2026-07-11)
+
+Droplet: ryklo-web | blr1 | $4 | droplet IP 167.71.229.13
+Reserved IP (use in GoDaddy): 168.144.0.15
+FE+BE+nginx: LIVE at http://168.144.0.15
+SSL: DONE — https://ryklotechnologies.com (expires 2026-10-09, auto-renew via certbot)
+
+------------------------------------------------------------
+
+CI/CD: GitHub Actions deploys to droplet on push to main.
+Secrets: DEPLOY_HOST, DEPLOY_USER, DEPLOY_SSH_KEY
+GitHub Pages: disabled
+See docs/deployment.md
+
+
+currently my github CICD pipeline is pointing to github pages. I want updated CICD pipeline to be able to deploy to this server. 
