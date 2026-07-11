@@ -49,3 +49,17 @@ See docs/deployment.md
 
 
 currently my github CICD pipeline is pointing to github pages. I want updated CICD pipeline to be able to deploy to this server. 
+
+------------------------------------------------------------
+
+Address update (2026-07-11)
+
+Headquarters set to:
+S.N 48/1/1/3, Anand Park, Dhanori Road, Near Saibaba Mandir,
+Bhairav Nagar, Pune City, Dighi Camp PO, Pune, Maharashtra-411015
+
+Updated in contact section + JSON-LD structured data (Organization + ProfessionalService).
+
+Full chronological steps: docs/steps-performed.md
+See also: docs/deployment.md
+
