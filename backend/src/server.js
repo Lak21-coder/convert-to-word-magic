@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
-const { saveContact, saveRegistration } = require("./sheets");
+const { saveContact, saveRegistration, saveEnrollment } = require("./sheets");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -114,6 +114,48 @@ app.post("/api/register", async (req, res) => {
         status === 403
           ? "Google Sheet permission denied. Share the sheet with the service account as Editor."
           : "Failed to save registration.",
+    });
+  }
+});
+
+app.post("/api/enroll", async (req, res) => {
+  try {
+    const data = trimFields(req.body || {}, [
+      "name",
+      "email",
+      "phone",
+      "course",
+      "batch",
+      "startDate",
+    ]);
+    data.sessions = req.body?.sessions ?? "";
+    data.hours = req.body?.hours ?? "";
+    data.fee = req.body?.fee ?? "";
+
+    if (!isNonEmptyString(data.name)) {
+      return res.status(400).json({ error: "Name is required." });
+    }
+    if (!isValidEmail(data.email)) {
+      return res.status(400).json({ error: "A valid email is required." });
+    }
+    if (!isNonEmptyString(data.phone)) {
+      return res.status(400).json({ error: "Phone number is required." });
+    }
+    if (!isNonEmptyString(data.course)) {
+      return res.status(400).json({ error: "Please select a course." });
+    }
+
+    await saveEnrollment(data);
+    return res.status(201).json({ ok: true, message: "Enrollment saved." });
+  } catch (err) {
+    console.error("Enroll error:", err.message);
+    const status =
+      err.code === 403 || /permission/i.test(err.message) ? 403 : 500;
+    return res.status(status).json({
+      error:
+        status === 403
+          ? "Google Sheet permission denied. Share the sheet with the service account as Editor."
+          : "Failed to save enrollment.",
     });
   }
 });

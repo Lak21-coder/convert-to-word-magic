@@ -119,6 +119,19 @@ const REGISTER_HEADERS = [
   "Notes",
 ];
 
+const ENROLL_HEADERS = [
+  "Timestamp",
+  "Name",
+  "Email",
+  "Phone",
+  "Course",
+  "Sessions",
+  "Hours",
+  "Fee (INR)",
+  "Batch",
+  "Start Date",
+];
+
 async function saveContact({ name, email, company, message }) {
   const sheetName = process.env.SHEET_CONTACTS || "Contacts";
   await appendRow(sheetName, CONTACT_HEADERS, [
@@ -150,7 +163,34 @@ async function saveRegistration({
   ]);
 }
 
+async function saveEnrollment({
+  name,
+  email,
+  phone,
+  course,
+  sessions,
+  hours,
+  fee,
+  batch,
+  startDate,
+}) {
+  const sheetName = process.env.SHEET_ENROLLMENTS || "Enrollments";
+  await appendRow(sheetName, ENROLL_HEADERS, [
+    new Date().toISOString(),
+    name,
+    email,
+    phone || "",
+    course,
+    sessions ?? "",
+    hours ?? "",
+    fee ?? "",
+    batch || "",
+    startDate || "",
+  ]);
+}
+
 module.exports = {
   saveContact,
   saveRegistration,
+  saveEnrollment,
 };
