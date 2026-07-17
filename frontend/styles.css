@@ -1,33 +1,32 @@
-/* Ryklo brand palette — derived from the logo (royal blue + teal-green + orange on navy) */
+/* Professional technology palette — navy, blue, teal, and restrained orange */
 :root {
-  /* Primary — brand teal (dominant) */
-  --blue-60: #0f9e8a;
-  --blue-70: #0b7a6b;
-  --blue-50: #45d1ba;
-  --blue-20: #d3f2ec;
+  /* Primary */
+  --blue-60: #2563eb;
+  --blue-70: #1d4ed8;
+  --blue-50: #60a5fa;
+  --blue-20: #dbeafe;
 
-  /* Brand accents */
-  --accent: #f57c00;
-  --accent-dark: #d96a00;
-  --accent-light: #ffb25e;
-  /* Secondary accent — brand blue (kept under the --teal name to avoid churn) */
-  --teal: #2f6bed;
-  --teal-dark: #1e50c0;
+  /* Supporting accents */
+  --accent: #f97316;
+  --accent-dark: #c2410c;
+  --accent-light: #fdba74;
+  --teal: #0d9488;
+  --teal-dark: #0f766e;
 
-  /* Ink / neutral scale, subtly navy-tinted to match the wordmark */
-  --gray-100: #12233f;
-  --gray-90: #22304a;
-  --gray-80: #3a4763;
-  --gray-70: #556074;
-  --gray-50: #8a90a0;
-  --gray-30: #c4c8d2;
-  --gray-20: #e2e5ec;
-  --gray-10: #f3f5f9;
+  /* Navy-tinted neutral scale */
+  --gray-100: #0f172a;
+  --gray-90: #1e293b;
+  --gray-80: #334155;
+  --gray-70: #475569;
+  --gray-50: #94a3b8;
+  --gray-30: #cbd5e1;
+  --gray-20: #e2e8f0;
+  --gray-10: #f8fafc;
   --white: #ffffff;
   --font: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --shadow-sm: 0 2px 6px rgba(18, 35, 63, 0.08);
-  --shadow-md: 0 10px 28px rgba(18, 35, 63, 0.14);
-  --radius: 4px;
+  --shadow-sm: 0 3px 10px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 16px 36px rgba(15, 23, 42, 0.14);
+  --radius: 10px;
   --transition: 0.2s ease;
   --container: 1200px;
 }
@@ -95,14 +94,15 @@ a:hover {
   top: 0;
   z-index: 100;
   background: var(--white);
-  border-bottom: 1px solid var(--gray-20);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 2px 12px rgba(15, 23, 42, 0.05);
 }
 
 .header-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 4.5rem;
+  height: 6rem;
 }
 
 .logo {
@@ -135,18 +135,18 @@ a:hover {
 
 .logo-img {
   display: block;
-  height: 3.25rem;
+  height: 4.75rem;
   width: auto;
   object-fit: contain;
 }
 
 .site-footer .logo-img {
-  height: 3rem;
+  height: 4.25rem;
 }
 
 @media (max-width: 480px) {
   .logo-img {
-    height: 2.5rem;
+    height: 3.75rem;
   }
 }
 
@@ -204,7 +204,7 @@ a:hover {
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: 0.01em;
-  border-radius: 0;
+  border-radius: 8px;
   border: 1px solid transparent;
   cursor: pointer;
   transition: background var(--transition), color var(--transition), border-color var(--transition);
@@ -245,7 +245,7 @@ a:hover {
 /* Hero */
 .hero {
   position: relative;
-  background: var(--gray-100);
+  background: linear-gradient(120deg, #0b1930 0%, #102b51 55%, #123e5b 100%);
   color: var(--white);
   padding: 6rem 0 5rem;
   overflow: hidden;
@@ -255,8 +255,8 @@ a:hover {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 70% 40%, rgba(15, 98, 254, 0.25) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 20% 80%, rgba(69, 137, 255, 0.12) 0%, transparent 50%);
+    radial-gradient(ellipse 80% 60% at 75% 35%, rgba(37, 99, 235, 0.32) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 20% 85%, rgba(13, 148, 136, 0.2) 0%, transparent 52%);
   pointer-events: none;
 }
 
@@ -349,7 +349,7 @@ a:hover {
 /* Stats */
 .stats {
   padding: 0;
-  background: var(--blue-60);
+  background: linear-gradient(105deg, var(--blue-70), #2563eb 55%, var(--teal-dark));
 }
 
 .stats-grid {
@@ -400,6 +400,7 @@ a:hover {
   padding: 2rem;
   background: var(--white);
   border: 1px solid var(--gray-20);
+  border-radius: var(--radius);
   transition: box-shadow var(--transition), border-color var(--transition), transform var(--transition);
 }
 
@@ -413,7 +414,7 @@ a:hover {
   transform: translateY(-3px);
 }
 
-/* Multi-colour service accents, mirroring the brand logo */
+/* Balanced accents derived from the Ryklo logo */
 .service-card:nth-child(1) .service-icon { color: var(--blue-60); }
 .service-card:nth-child(2) { border-top-color: var(--teal); }
 .service-card:nth-child(2) .service-icon { color: var(--teal); }
@@ -497,6 +498,7 @@ a:hover {
   padding: 1.75rem;
   background: var(--white);
   border-left: 3px solid var(--blue-60);
+  border-radius: 0 var(--radius) var(--radius) 0;
   transition: box-shadow var(--transition), transform var(--transition);
 }
 
@@ -608,6 +610,7 @@ a:hover {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--gray-80);
+  border-radius: 999px;
   transition: background var(--transition), border-color var(--transition), color var(--transition);
 }
 
@@ -645,6 +648,7 @@ a:hover {
   padding: 1.5rem 2rem;
   background: var(--gray-10);
   border-left: 4px solid var(--blue-60);
+  border-radius: 0 var(--radius) var(--radius) 0;
 }
 
 .about-stat-block:nth-child(2) {
@@ -682,7 +686,7 @@ a:hover {
 /* Contact */
 .contact {
   padding: 5rem 0;
-  background: var(--gray-100);
+  background: linear-gradient(120deg, #0b1930, var(--gray-100) 60%, #123e5b);
   color: var(--white);
 }
 
@@ -741,6 +745,7 @@ a:hover {
   background: var(--gray-90);
   padding: 2rem;
   border: 1px solid var(--gray-80);
+  border-radius: var(--radius);
 }
 
 .form-row {
@@ -886,7 +891,7 @@ a:hover {
 
   .main-nav {
     position: fixed;
-    inset: 4.5rem 0 auto 0;
+    inset: 6rem 0 auto 0;
     background: var(--white);
     border-bottom: 1px solid var(--gray-20);
     box-shadow: var(--shadow-md);
@@ -959,7 +964,7 @@ a:hover {
 
 .page-hero {
   position: relative;
-  background: var(--gray-100);
+  background: linear-gradient(120deg, #0b1930 0%, #102b51 60%, #123e5b 100%);
   color: var(--white);
   padding: 4.5rem 0 3.5rem;
   overflow: hidden;
@@ -1000,6 +1005,8 @@ a:hover {
   background: var(--white);
   border: 1px solid var(--gray-20);
   padding: 1.75rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
 }
 
 .panel-title {
@@ -1061,7 +1068,7 @@ a:hover {
   color: var(--gray-100);
   background: var(--white);
   border: 1px solid var(--gray-30);
-  border-radius: 0;
+  border-radius: 8px;
   outline: none;
   transition: border-color var(--transition), box-shadow var(--transition);
 }
@@ -1105,7 +1112,7 @@ a:hover {
   padding: 0.75rem 0.875rem;
   background: var(--white);
   border: 1px solid var(--gray-20);
-  border-radius: 0;
+  border-radius: 8px;
   cursor: pointer;
   font-family: var(--font);
   transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
@@ -1163,6 +1170,7 @@ a:hover {
   padding: 1rem;
   background: var(--white);
   border: 1px solid var(--gray-20);
+  border-radius: 8px;
   cursor: pointer;
   font-family: var(--font);
   transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
@@ -1193,13 +1201,15 @@ a:hover {
 /* Summary / ticket card */
 .enroll-summary {
   position: sticky;
-  top: 4.5rem;
+  top: 6rem;
 }
 
 .summary-card {
   background: var(--gray-100);
   color: var(--gray-20);
   border: 1px solid var(--gray-80);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
 .summary-head {
@@ -1282,8 +1292,8 @@ a:hover {
 }
 
 .status-ok {
-  background: rgba(15, 110, 99, 0.25);
-  color: #9fe1cb;
+  background: rgba(13, 148, 136, 0.24);
+  color: #99f6e4;
 }
 
 .status-error {
@@ -1328,6 +1338,7 @@ a:hover {
   background: var(--white);
   border: 1px solid var(--gray-20);
   padding: 1.75rem;
+  border-radius: var(--radius);
 }
 
 .fee-table-title {
