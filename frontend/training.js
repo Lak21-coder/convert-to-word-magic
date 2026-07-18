@@ -50,7 +50,7 @@ function renderCourseGrid(list, containerId) {
   el.innerHTML = list
     .map(
       (c) => `
-      <button type="button" class="course-card" data-id="${c.id}">
+      <button type="button" class="course-card" data-id="${c.id}" aria-pressed="false">
         <span class="course-info">
           <span class="course-name">${c.name}</span>
           <span class="course-meta">${c.sessions} sessions · ${c.hours}h</span>
@@ -59,10 +59,6 @@ function renderCourseGrid(list, containerId) {
       </button>`
     )
     .join("");
-
-  el.querySelectorAll(".course-card").forEach((card) => {
-    card.addEventListener("click", () => selectCourse(card.dataset.id));
-  });
 }
 
 function renderFeeTable() {
@@ -82,20 +78,31 @@ function renderFeeTable() {
 }
 
 function selectCourse(id) {
-  selectedCourse = findCourse(id);
+  const course = findCourse(id);
+  if (!course) return;
+
+  selectedCourse = course;
   document.querySelectorAll(".course-card").forEach((el) => {
-    el.classList.toggle("active", el.dataset.id === id);
-    el.setAttribute("aria-pressed", String(el.dataset.id === id));
+    const isActive = el.dataset.id === id;
+    el.classList.toggle("is-selected", isActive);
+    el.classList.toggle("active", isActive);
+    el.setAttribute("aria-pressed", String(isActive));
   });
-  document.getElementById("course-count").textContent = "1 selected";
+
+  const countEl = document.getElementById("course-count");
+  if (countEl) countEl.textContent = "1 selected";
   updateSummary();
 }
 
 function selectBatch(type) {
+  if (!BATCH_LABELS[type]) return;
+
   selectedBatch = type;
   document.querySelectorAll(".batch-card").forEach((el) => {
-    el.classList.toggle("active", el.dataset.batch === type);
-    el.setAttribute("aria-pressed", String(el.dataset.batch === type));
+    const isActive = el.dataset.batch === type;
+    el.classList.toggle("is-selected", isActive);
+    el.classList.toggle("active", isActive);
+    el.setAttribute("aria-pressed", String(isActive));
   });
   updateSummary();
 }
@@ -117,7 +124,8 @@ function setText(id, value) {
 }
 
 function updateSummary() {
-  const name = document.getElementById("f-name").value.trim();
+  const nameInput = document.getElementById("f-name");
+  const name = nameInput ? nameInput.value.trim() : "";
   setText("t-name", name || "—");
 
   if (selectedCourse) {
@@ -132,16 +140,39 @@ function updateSummary() {
     setText("t-fee", "₹0");
   }
 
-  const dateVal = document.getElementById("f-date").value;
+  const dateInput = document.getElementById("f-date");
+  const dateVal = dateInput ? dateInput.value : "";
   setText(
     "t-batch",
-    selectedBatch ? BATCH_LABELS[selectedBatch].split(" · ").slice(0, 2).join(" · ") : "Not selected"
+    selectedBatch
+      ? BATCH_LABELS[selectedBatch].split(" · ").slice(0, 2).join(" · ")
+      : "Not selected"
   );
   setText("t-date", formatDate(dateVal) || "—");
 
-  const ready = Boolean(selectedCourse && selectedBatch && dateVal && name);
-  document.getElementById("btn-submit").disabled = !ready;
-  document.getElementById("btn-whatsapp").disabled = !(selectedCourse && selectedBatch);
+  const emailInput = document.getElementById("f-email");
+  const phoneInput = document.getElementById("f-phone");
+  const email = emailInput ? emailInput.value.trim() : "";
+  const phone = phoneInput ? phoneInput.value.trim() : "";
+
+  const ready = Boolean(
+    selectedCourse &&
+      selectedBatch &&
+      dateVal &&
+      name &&
+      email &&
+      phone
+  );
+
+  const submitBtn = document.getElementById("btn-submit");
+  if (submitBtn && submitBtn.dataset.busy !== "1") {
+    submitBtn.disabled = !ready;
+  }
+
+  const waBtn = document.getElementById("btn-whatsapp");
+  if (waBtn) {
+    waBtn.disabled = !(selectedCourse && selectedBatch);
+  }
 }
 
 function buildEnrollmentText() {
@@ -177,12 +208,20 @@ function showStatus(message, type) {
 
 async function submitEnrollment(event) {
   event.preventDefault();
-  if (!selectedCourse || !selectedBatch) return;
+  if (!selectedCourse || !selectedBatch) {
+    showStatus("Please select a course and batch first.", "error");
+    return;
+  }
 
   const btn = document.getElementById("btn-submit");
+  if (!btn) return;
+
   const originalText = btn.textContent;
+  btn.dataset.busy = "1";
   btn.disabled = true;
   btn.textContent = "Reserving…";
+  showStatus("", "ok");
+  document.getElementById("status-msg")?.classList.remove("show");
 
   const payload = {
     name: document.getElementById("f-name").value.trim(),
@@ -196,6 +235,14 @@ async function submitEnrollment(event) {
     startDate: document.getElementById("f-date").value,
   };
 
+  if (!payload.name || !payload.email || !payload.phone || !payload.startDate) {
+    showStatus("Please fill name, email, phone, and start date.", "error");
+    btn.dataset.busy = "0";
+    btn.textContent = originalText;
+    updateSummary();
+    return;
+  }
+
   try {
     const res = await fetch(`${API_BASE}/api/enroll`, {
       method: "POST",
@@ -204,38 +251,71 @@ async function submitEnrollment(event) {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || "Failed to reserve seat.");
-    showStatus("Seat reserved! Our team will reach out to confirm your enrollment.", "ok");
+    showStatus(
+      "Seat reserved! Our team will reach out to confirm your enrollment.",
+      "ok"
+    );
     btn.textContent = "Reserved!";
   } catch (err) {
     console.error(err);
     showStatus(err.message || "Could not reserve your seat. Please try again.", "error");
     btn.textContent = "Try again";
+    btn.dataset.busy = "0";
     btn.disabled = false;
     return;
   } finally {
     if (btn.textContent === "Reserving…") btn.textContent = originalText;
+    if (btn.textContent !== "Reserved!") {
+      btn.dataset.busy = "0";
+      updateSummary();
+    }
   }
+}
+
+function bindSelectionEvents() {
+  // Event delegation — survives re-renders and is more reliable on mobile.
+  document.addEventListener("click", (event) => {
+    const courseCard = event.target.closest(".course-card");
+    if (courseCard && courseCard.dataset.id) {
+      event.preventDefault();
+      selectCourse(courseCard.dataset.id);
+      return;
+    }
+
+    const batchCard = event.target.closest(".batch-card");
+    if (batchCard && batchCard.dataset.batch) {
+      event.preventDefault();
+      selectBatch(batchCard.dataset.batch);
+    }
+  });
 }
 
 function init() {
   renderCourseGrid(SINGLE_COURSES, "single-grid");
   renderCourseGrid(COMBO_PACKAGES, "combo-grid");
   renderFeeTable();
+  bindSelectionEvents();
 
   const wo = String(Math.floor(Math.random() * 9999)).padStart(4, "0");
   setText("wo-number", "WO-2026-" + wo);
 
   document.querySelectorAll(".batch-card").forEach((card) => {
-    card.addEventListener("click", () => selectBatch(card.dataset.batch));
+    card.setAttribute("aria-pressed", "false");
   });
 
   ["f-name", "f-phone", "f-email", "f-date"].forEach((id) => {
     const el = document.getElementById(id);
-    if (el) el.addEventListener("input", updateSummary);
+    if (el) {
+      el.addEventListener("input", updateSummary);
+      el.addEventListener("change", updateSummary);
+    }
   });
 
-  document.getElementById("btn-whatsapp").addEventListener("click", confirmViaWhatsapp);
-  document.getElementById("enroll-form").addEventListener("submit", submitEnrollment);
+  const waBtn = document.getElementById("btn-whatsapp");
+  if (waBtn) waBtn.addEventListener("click", confirmViaWhatsapp);
+
+  const form = document.getElementById("enroll-form");
+  if (form) form.addEventListener("submit", submitEnrollment);
 
   updateSummary();
 }

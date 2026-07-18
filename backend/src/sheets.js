@@ -1,16 +1,43 @@
 const { google } = require("googleapis");
 
 let sheetsClient = null;
+let cachedSpreadsheetId = null;
+
+/**
+ * Normalize a service-account private key from .env.
+ * Handles quoted values, literal \n, and Windows-style line endings.
+ */
+function normalizePrivateKey(raw) {
+  if (!raw || typeof raw !== "string") return "";
+  let key = raw.trim();
+  if (
+    (key.startsWith('"') && key.endsWith('"')) ||
+    (key.startsWith("'") && key.endsWith("'"))
+  ) {
+    key = key.slice(1, -1);
+  }
+  return key.replace(/\\n/g, "\n").replace(/\r\n/g, "\n").trim();
+}
 
 function getAuth() {
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
-  const spreadsheetId = process.env.GOOGLE_SHEETS_ID;
+  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL?.trim();
+  const privateKey = normalizePrivateKey(process.env.GOOGLE_PRIVATE_KEY);
+  const spreadsheetId = process.env.GOOGLE_SHEETS_ID?.trim();
 
   if (!email || !privateKey || !spreadsheetId) {
-    throw new Error(
+    const err = new Error(
       "Missing Google Sheets config. Set GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_PRIVATE_KEY, and GOOGLE_SHEETS_ID."
     );
+    err.code = "CONFIG";
+    throw err;
+  }
+
+  if (!privateKey.includes("BEGIN PRIVATE KEY")) {
+    const err = new Error(
+      "GOOGLE_PRIVATE_KEY looks invalid (missing BEGIN PRIVATE KEY marker)."
+    );
+    err.code = "CONFIG";
+    throw err;
   }
 
   const auth = new google.auth.JWT({
@@ -24,14 +51,18 @@ function getAuth() {
 
 function getSheets() {
   if (!sheetsClient) {
-    const { auth } = getAuth();
+    const { auth, spreadsheetId } = getAuth();
     sheetsClient = google.sheets({ version: "v4", auth });
+    cachedSpreadsheetId = spreadsheetId;
   }
   return sheetsClient;
 }
 
 function getSpreadsheetId() {
-  return getAuth().spreadsheetId;
+  if (!cachedSpreadsheetId) {
+    cachedSpreadsheetId = getAuth().spreadsheetId;
+  }
+  return cachedSpreadsheetId;
 }
 
 /**

@@ -9,6 +9,9 @@ Simple Node/Express API that stores **Contact** and **Registration** form submis
 | `GET` | `/health` | — |
 | `POST` | `/api/contact` | `name`, `email`, `message` (required); `company` (optional) |
 | `POST` | `/api/register` | `name`, `email` (required); `company`, `phone`, `interest`, `notes` (optional) |
+| `POST` | `/api/enroll` | `name`, `email`, `phone`, `course`, `batch`, `startDate` (required); `sessions`, `hours`, `fee` (optional) |
+
+Submissions are written to Google Sheets. If Sheets is unavailable (bad credentials, permission error, etc.), the API still succeeds and stores a local JSONL copy under `backend/data/` so forms keep working.
 
 ## Local run
 

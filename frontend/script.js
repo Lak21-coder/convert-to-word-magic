@@ -27,7 +27,10 @@ if (contactForm) {
   contactForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const btn = contactForm.querySelector('button[type="submit"]');
+    if (!btn || btn.dataset.busy === "1") return;
+
     const originalText = btn.textContent;
+    btn.dataset.busy = "1";
     btn.disabled = true;
     btn.textContent = "Sending…";
 
@@ -58,7 +61,8 @@ if (contactForm) {
       setTimeout(() => {
         btn.textContent = originalText;
         btn.disabled = false;
-      }, 3000);
+        btn.dataset.busy = "0";
+      }, 2500);
     }
   });
 }
